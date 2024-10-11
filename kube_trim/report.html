@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pod Metrics Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <h1>Pod Metrics Report</h1>
+    <table id="reportTable" class="display">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Average CPU (mCores)</th>
+                <th>Max CPU (mCores)</th>
+                <th>Requested CPU (mCores)</th>
+                <th>Recommended CPU (mCores)</th>
+                <th>CPU Over-Provisioned</th>
+                <th>Average Memory (Mi)</th>
+                <th>Max Memory (Mi)</th>
+                <th>Requested Memory (Mi)</th>
+                <th>Recommended Memory (Mi)</th>
+                <th>Memory Over-Provisioned</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            // Fetch the report data
+            $.getJSON("/report", function(data) {
+                let tableBody = "";
+                data.forEach(function(item) {
+                    tableBody += `<tr>
+                        <td>${item.image}</td>
+                        <td>${Number(item["avg_cpu(mCores)"].toPrecision(4))}</td>
+                        <td>${Number(item["max_cpu(mCores)"].toPrecision(4))}</td>
+                        <td>${Number(item["requested_cpu(mCores)"].toPrecision(4))}</td>
+                        <td>${Number(item["recommended_cpu(mCores)"].toPrecision(4))}</td>
+                        <td>${Number(item["cpu_over_provisioned"].toPrecision(4))}</td>
+                        <td>${Number(item["avg_memory(Mi)"].toPrecision(4))}</td>
+                        <td>${Number(item["max_memory(Mi)"].toPrecision(4))}</td>
+                        <td>${Number(item["requested_memory(Mi)"].toPrecision(4))}</td>
+                        <td>${Number(item["recommended_memory(Mi)"].toPrecision(4))}</td>
+                        <td>${Number(item["memory_over_provisioned"].toPrecision(4))}</td>
+                    </tr>`;
+                });
+                $("#reportTable tbody").html(tableBody);
+
+                // Initialize DataTables for sorting functionality
+                $('#reportTable').DataTable();
+            });
+        });
+    </script>
+</body>
+</html>
